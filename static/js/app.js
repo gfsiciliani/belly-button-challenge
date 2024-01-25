@@ -36,50 +36,34 @@ d3.json(url).then(function(data) {
 
 // Initialize and refresh dashboard
 function init(value = globalData.names[0]) {
-
-    // Use D3 to select dropdown menu
-    let dropdownMenu = d3.select('#selDataset');
-
-    // add to dropdownMenu
-    globalData.names.forEach(id => {
-        dropdownMenu.append("option")
-            .text(id)
-            .property("value", id)   
-    });
-
     getSample(value);
-
-    // build init plots
     buildBarChart(value);
     buildBubbleChart(value);
     buildMetadata(value);
 }
 
+// retrieve sample
 function getSample(sampleChoice) {
 
     // Get all sample data
     let sampleData = globalData.samples;
-    console.log("___", sampleChoice)
+    console.log("User selected sample id:", sampleChoice)
 
     // isolate given ID's sample data
     let sampleSelected = sampleData.filter(x => x.id == sampleChoice);
-    // console.log("TEST",sampleSelected);
 
     // parse sample data
     otu_ids = sampleSelected[0].otu_ids;
     otu_labels = sampleSelected[0].otu_labels;
     sample_values = sampleSelected[0].sample_values;
-
-    // metadata
-    let metadata = globalData.metadata
 }
 
-// [2] - building bar chart that shows the top 10 OTUs in the given individual in the dropdown
+// building bar chart that shows the top 10 OTUs in the given individual in the dropdown
 function buildBarChart(sampleChoice) {
     
     // get top ten
     let xData = sample_values.slice(0,10).reverse();
-    let yData = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();  // WHY????
+    let yData = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();  //
     let labels = otu_labels.slice(0,10).reverse();
     
     // define trace for bar chart
@@ -113,7 +97,7 @@ function buildBarChart(sampleChoice) {
     Plotly.newPlot("bar", chartData, layout);  
 };
 
-// [3] - building bubble chart displaying each sample
+// building bubble chart displaying each sample
 function buildBubbleChart(sampleID) {
 
     // define trace for bubble chart
@@ -168,8 +152,10 @@ function buildMetadata(sampleID) {
 
     // populate Demographic Info
     Object.entries(sampleSelected[0]).forEach(([key, value]) => {
-        d3.select('#sample-metadata').append("h5").text(`${key}: ${value}`)
-    }); 
+        d3.select('#sample-metadata')
+        .append("h5")
+        .text(`${key}: ${value}`)
+    });
 };
 
 // update when sample is changed
