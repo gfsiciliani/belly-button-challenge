@@ -156,27 +156,20 @@ function buildBubbleChart(sampleID) {
 
 // retrieve and display Subject ID's METADATA
 function buildMetadata(sampleID) {
-        
-        // get 'metadata' array
-        metadata = globalData.metadata;
+    
+    // isolate given ID's METADATA object
+    let sampleSelected = globalData.metadata.filter(x => x.id == sampleID);
+    
+    // log metadata object to console 
+    console.log("Sample selected",sampleSelected[0])
+    
+    // clear Demographic Info
+    d3.select('#sample-metadata').html("");
 
-        // isolate given ID's METADATA object
-        let sampleSelected = metadata.filter(x => x.id == sampleID);
-        // let sampleSelected = metadata[sampleID]
-        
-        // log metadata object to console 
-        console.log("Sample selected",sampleSelected[0])
-        
-        // clear html "Demographic Info"
-        d3.select('#sample-metadata').html("");
-
-        //
-        Object.entries(sampleSelected[0]).forEach(([key, value]) => {
-            d3.select('#sample-metadata').append("h5").text(`${key}: ${value}`)
-        }); 
-
-
-    // });
+    // populate Demographic Info
+    Object.entries(sampleSelected[0]).forEach(([key, value]) => {
+        d3.select('#sample-metadata').append("h5").text(`${key}: ${value}`)
+    }); 
 };
 
 // update when sample is changed
