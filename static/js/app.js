@@ -3,13 +3,15 @@
 // Get samples endpoint
 const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
 
+// declare variables
 let globalData = null;
 let otu_ids = null;
 let otu_labels = null;
 let sample_values = null;
 let metadata = null;
+let names = null;
 
-// Fetch the JSON data and console log it  // MAYBE do all the data definitions here instead of just `globalData`
+// Fetch the JSON data and console log it // get data and do things that only happen once
 console.log("FETCHING JSON...")
 d3.json(url).then(function(data) {
     
@@ -18,53 +20,39 @@ d3.json(url).then(function(data) {
     console.log(data);
     globalData = data;
 
-    // Fn
-    dropdownDefine();
-    init();
-});
-
-function dropdownDefine() {
-        // Use D3 to select dropdown menu
+    // Use D3 to select dropdown menu
     let dropdownMenu = d3.select('#selDataset');
 
-    // get sample names and populate them in dropdownMenu
-    // get names array
-    let names = globalData.names;
-
     // add to dropdownMenu
-    names.forEach(id => {
+    globalData.names.forEach(id => {
         dropdownMenu.append("option")
             .text(id)
             .property("value", id)   
     });
-}
+
+    // initialize graphs and metadata
+    init();
+});
 
 // Initialize and refresh dashboard
-function init() {
+function init(value = globalData.names[0]) {
 
     // Use D3 to select dropdown menu
     let dropdownMenu = d3.select('#selDataset');
 
-    // get sample names and populate them in dropdownMenu
-    // get names array
-    let names = globalData.names;
-
     // add to dropdownMenu
-    names.forEach(id => {
+    globalData.names.forEach(id => {
         dropdownMenu.append("option")
             .text(id)
             .property("value", id)   
     });
 
-    // set sample for initial page load
-    let initSample = names[0];
-
-    getSample(initSample);
+    getSample(value);
 
     // build init plots
-    buildBarChart(initSample);
-    buildBubbleChart(initSample);
-    buildMetadata(initSample);
+    buildBarChart(value);
+    buildBubbleChart(value);
+    buildMetadata(value);
 }
 
 function getSample(sampleChoice) {
@@ -191,18 +179,8 @@ function buildMetadata(sampleID) {
     // });
 };
 
-
-// adjust this to take the dropdown selection (14.3.last)
-// also need to populate the dropdown WITH those values
-
-// unify data-get in one function (use of ID rather than current use of index, sampleID)
-    // need to use `.filter(x => x.property)
-
-// update all when sample is changed
+// update when sample is changed
 function optionChanged(value) {
     console.log(value);
-    getSample(value);
-    buildBarChart(value);
-    buildBubbleChart(value);
-    buildMetadata(value);
+    init(value);
 }
